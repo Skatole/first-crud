@@ -29,7 +29,6 @@ export const create = async (req: Request, res: Response) => {
       lastName: req.body.lastName,
       email: req.body.email,
       age: req.body.age
-      
     }
     await database('users').insert(user);
     res.sendStatus(201);
