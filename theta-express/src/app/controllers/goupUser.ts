@@ -1,11 +1,10 @@
 import { User } from "../models/user";
 import { database } from "../../lib/database";
 import { Request, Response } from "express";
-import * as userSerializer from '../serializers/user'
 
 export const index = async (req: Request, res: Response) => {
-  const users: Array<User> = await database('users').select();
-  res.json(userSerializer.index(users));
+  const users: Array<User> = await database('users').where({goupId: req.params.goupId, id: req.params.id}).select();
+  res.json(users);
 };
 
 export const show = async (req: Request, res: Response) => {
@@ -13,7 +12,7 @@ export const show = async (req: Request, res: Response) => {
     const user: User = await database('users').select().where({ id: req.params.id }).first();
     console.log(user);
     if (typeof user !== 'undefined') {
-      res.json(userSerializer.show(user));
+      res.json(user);
     } else {
       res.sendStatus(404);
     }
