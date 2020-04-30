@@ -1,6 +1,6 @@
 exports.up = (knex) => {
   return knex.schema.alterTable('users', (table) => {
-    table.integer('groupID').unsigned().references('groups.id');
+    table.integer('groupId').unsigned().references('groups.id');
   });
 };
 

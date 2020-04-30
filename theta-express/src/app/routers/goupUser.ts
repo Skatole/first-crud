@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as userController from '../controllers/goupUseruser';
+import * as userController from '../controllers/goupUser';
 
 export const router: Router = Router({ mergeParams: true });
 
