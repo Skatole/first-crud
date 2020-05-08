@@ -4,12 +4,49 @@ import { database } from "./database";
 import * as jwt from "jsonwebtoken";
 import * as jwtConfig from '../../config/jwt.json'
 
-export const authentication = async (req: Request, res: Response, next: NextFunction) => {
-  if((req.path.endsWith('/user') || req.path.endsWith('/login')) && req.method === 'POST') {
-    return next();
-  }
-  try {
+enum Method {
+  get = 'GET',
+  post = 'POST',
+  put = 'PUT',
+  destroy = 'DELETE'
+}
 
+interface AnonymusEndpoint {
+  path: string;
+  method: Method;
+}
+
+const anonymusEndpoints: Array<AnonymusEndpoint> = [
+  {
+    path: '/user',
+    method: Method.post
+  },
+  {
+    path: '/login',
+    method: Method.post
+  }
+]
+
+/*
+const isAnonymusEndpoint = (req: Request): boolean => {
+  for (let anonymusEndpoint of anonymusEndpoints) {
+    if (anonymusEndpoint.method === req.method && anonymusEndpoint.path === req.path) {
+      return true;
+    }
+  }
+  return false;
+}
+*/
+
+const isAnonymusEndpoint = (req: Request): boolean => {
+  return !!(anonymusEndpoints.find(anonymusEndpoint => (anonymusEndpoint.method === req.method && anonymusEndpoint.path === req.path)))
+}
+
+export const authentication = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (isAnonymusEndpoint(req)) {
+      return next();
+    }  
     const token: string = req.headers.authorization.split(' ')[1];
     const info = jwt.verify(token, jwtConfig.secret);
     const userId: number =  info.userId;
